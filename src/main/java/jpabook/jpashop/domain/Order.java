@@ -1,13 +1,13 @@
 package jpabook.jpashop.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
 @Entity
@@ -54,7 +54,8 @@ public class Order {
 
     private LocalDateTime orderDate;
 
-    private OrderStatus orderStatus; // 주문 상태
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status; // 주문 상태
 
     /**
      * 연관관계 편의 메소드들 (연관관계 주인 쪽에 둬야한다)
@@ -73,5 +74,47 @@ public class Order {
     public void setDelivery(Delivery delivery) {
         this.delivery = delivery;
         delivery.setOrder(this);
+    }
+
+    /**
+     * 생성 메소드
+     * -> Order 생성 시점에 createOrder 메소드를 사용한다
+     */
+    public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems) {
+        Order order = new Order();
+        order.setMember(member);
+        order.setDelivery(delivery);
+        for (OrderItem orderItem : orderItems) {
+            order.addOrderItem(orderItem);
+        }
+
+        order.setStatus(OrderStatus.ORDER);
+        order.setOrderDate(LocalDateTime.now());
+        return order;
+    }
+
+    /**
+     * 비지니스 로직
+     * 주문 취소
+     */
+    public void cancel() {
+        if (delivery.getStatus() == DeliveryStatus.COMP) {
+            // 이미 배송중인 경우
+            throw new IllegalStateException("이미 배송완료된 상품은 취소가 불가능합니다.");
+        }
+        this.setStatus(OrderStatus.CANCEL);
+        for (OrderItem orderItem : orderItems) {
+            orderItem.cancel();
+        }
+    }
+
+    /**
+     * 조회 로직
+     * 전체 주문 가격 조회
+     */
+    public int getTotalPrice(){
+        return orderItems.stream()
+                .mapToInt(OrderItem::getTotalPrice)
+                .sum();
     }
 }
