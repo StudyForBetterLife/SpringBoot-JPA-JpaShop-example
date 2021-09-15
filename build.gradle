@@ -6,7 +6,7 @@ plugins {
 
 group = 'jpabook'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '15'
 
 configurations {
     compileOnly {
@@ -22,6 +22,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // javax.validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // 파일 캐싱을 막아주기 때문에 file recompile 만 해주면 화면이 바뀐다.
     implementation 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
