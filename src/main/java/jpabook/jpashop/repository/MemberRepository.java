@@ -5,9 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
 import java.util.List;
 
 /**
@@ -32,9 +29,8 @@ public class MemberRepository {
      * @PersistenceUnit private EntityManagerFactory emf;
      */
 
-    public Long save(Member member) {
+    public void save(Member member) {
         em.persist(member);
-        return member.getId();
     }
 
     public Member findOne(Long id) {
