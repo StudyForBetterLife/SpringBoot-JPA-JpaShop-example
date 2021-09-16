@@ -1,6 +1,7 @@
 package jpabook.jpashop.domain;
 
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -36,6 +37,8 @@ public class Order {
      * em.persist(order); 만 해두면
      * orderItems 도 같이 영속성 컨택스트에 저장된다.
      */
+    // @BatchSize(size = 100)
+    // 지연 로딩 성능 최적화를 개별로 설정하려면 해당 어노테이션을 사용할 것
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
