@@ -2,8 +2,8 @@ package jpabook.jpashop.repository;
 
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryDto;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -104,4 +104,22 @@ public class OrderRepository {
         }
         return query.getResultList();
     }
+
+    /**
+     * V3
+     * fetch join을 진짜 적극적으로 활용하자!!!!!
+     *
+     * <p>
+     * fetch join (fetch는 JPA에만 있는 문법)
+     * -> Order, Member, Delivery 를 조인해서 한번에 가져온다.
+     * Order의 지연로딩 설정된 필드에 값을 채워서 가져온다. (프록시 ㄴㄴ, 찐 값 ㅇㅇ)
+     */
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery(
+                        "select o from Order o " +
+                                " join fetch o.member m" +
+                                " join fetch o.delivery d", Order.class)
+                .getResultList();
+    }
+
 }
